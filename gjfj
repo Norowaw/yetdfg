@@ -1,0 +1,239 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+
+local Window = Rayfield:CreateWindow({
+   Name = "Alya 🌸 BlockSpin",
+   Icon = 0, 
+   LoadingTitle = "Alya 🌸 BlockSpin",
+   LoadingSubtitle = "by Alya ROB 🌸",
+   Theme = "Default", 
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "Alya Rob"
+   },
+
+   Discord = {
+      Enabled = true,
+      Invite = "t84fNMnzSA", 
+      RememberJoins = false 
+   },
+
+   KeySystem = true, 
+   KeySettings = {
+      Title = "BlockSpin / Alya 🌸",
+      Subtitle = "Link In Discord Server",
+      Note = "key In Discord :\nhttps://discord.gg/t84fNMnzSA", 
+      FileName = "get key", 
+      SaveKey = false, 
+      GrabKeyFromSite = true, 
+      Key = {"https://pastebin.com/raw/PDrW3hfD"}
+   }
+})
+
+
+local mainTab = Window:CreateTab("🏠 Main") 
+local mainSection = mainTab:CreateSection("Main")
+Rayfield:Notify({
+   Title = "You executed the script",
+   Content = "Very cool gui",
+   Duration = 5,
+})
+
+local Button = mainTab:CreateButton({
+   Name = "Infinite Jump Toggle",
+   Callback = function()
+     
+_G.infinjump = not _G.infinjump
+
+if _G.infinJumpStarted == nil then
+
+	_G.infinJumpStarted = true
+
+    local plr = game:GetService('Players').LocalPlayer
+	local m = plr:GetMouse()
+	m.KeyDown:connect(function(k)
+		if _G.infinjump then
+			if k:byte() == 32 then
+			humanoid = game:GetService'Players'.LocalPlayer.Character:FindFirstChildOfClass('Humanoid')
+			humanoid:ChangeState('Jumping')
+			wait()
+			humanoid:ChangeState('Seated')
+			end
+		end
+	end)
+end
+   end,
+})
+local Button = mainTab:CreateButton({
+   Name = "Infinite Stamina",
+   Callback = function()
+            local player = game.Players.LocalPlayer
+
+player:SetAttribute("MaxStamina", 1000000000000000)
+         
+local StaminaguiDelete = player.PlayerGui.TopRightHud.Holder.StaminaBar
+StaminaguiDelete:Destroy()
+   end,
+})
+local Button = mainTab:CreateButton({
+   Name = "ESP",
+   Callback = function()
+    -- Settings
+local BoxColor = Color3.new(1, 0, 0) -- Red color for boxes
+local BoxThickness = 2
+local HealthColor = Color3.new(0, 1, 0) -- Green color for health text
+local DistanceColor = Color3.new(1, 1, 1) -- White color for distance text
+local MaxDistance = 1000 -- Maximum distance to show boxes
+
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- Table to store boxes, health text, and distance text for each player
+local Boxes = {}
+local HealthTexts = {}
+local DistanceTexts = {}
+
+-- Function to create a box around a player
+local function CreateBox()
+    local Box = Drawing.new("Square")
+    Box.Visible = false
+    Box.Color = BoxColor
+    Box.Thickness = BoxThickness
+    Box.Filled = false
+    return Box
+end
+
+-- Function to create health text
+local function CreateHealthText()
+    local HealthText = Drawing.new("Text")
+    HealthText.Visible = false
+    HealthText.Color = HealthColor
+    HealthText.Size = 14
+    HealthText.Center = true
+    HealthText.Outline = true
+    return HealthText
+end
+
+-- Function to create distance text
+local function CreateDistanceText()
+    local DistanceText = Drawing.new("Text")
+    DistanceText.Visible = false
+    DistanceText.Color = DistanceColor
+    DistanceText.Size = 14
+    DistanceText.Center = true
+    DistanceText.Outline = true
+    return DistanceText
+end
+
+-- Main ESP loop
+RunService.RenderStepped:Connect(function()
+    for _, Player in pairs(Players:GetPlayers()) do
+        if Player ~= LocalPlayer and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+            local Character = Player.Character
+            local RootPart = Character.HumanoidRootPart
+            local Humanoid = Character:FindFirstChild("Humanoid")
+
+            -- Check distance
+            local Distance = (RootPart.Position - Camera.CFrame.Position).Magnitude
+            if Distance > MaxDistance then
+                if Boxes[Player] then
+                    Boxes[Player].Visible = false
+                end
+                if HealthTexts[Player] then
+                    HealthTexts[Player].Visible = false
+                end
+                if DistanceTexts[Player] then
+                    DistanceTexts[Player].Visible = false
+                end
+                return
+            end
+
+            -- Create or get the box, health text, and distance text
+            if not Boxes[Player] then
+                Boxes[Player] = CreateBox()
+            end
+            if not HealthTexts[Player] then
+                HealthTexts[Player] = CreateHealthText()
+            end
+            if not DistanceTexts[Player] then
+                DistanceTexts[Player] = CreateDistanceText()
+            end
+
+            -- Update box position
+            local Position, OnScreen = Camera:WorldToViewportPoint(RootPart.Position)
+            if OnScreen then
+                local Scale = 2 / (Position.Z * math.tan(math.rad(Camera.FieldOfView / 2)))
+                local Width = 600 * Scale
+                local Height = 900 * Scale
+
+                Boxes[Player].Size = Vector2.new(Width, Height)
+                Boxes[Player].Position = Vector2.new(Position.X - Width / 2, Position.Y - Height / 2)
+                Boxes[Player].Visible = true
+
+                -- Update health text
+                if Humanoid then
+                    HealthTexts[Player].Text = "HP: " .. math.floor(Humanoid.Health)
+                    HealthTexts[Player].Position = Vector2.new(Position.X, Position.Y + Height / 2 + 10)
+                    HealthTexts[Player].Visible = true
+                else
+                    HealthTexts[Player].Visible = false
+                end
+
+                -- Update distance text
+                DistanceTexts[Player].Text = "Distance: " .. math.floor(Distance) .. " studs"
+                DistanceTexts[Player].Position = Vector2.new(Position.X, Position.Y + Height / 2 + 30)
+                DistanceTexts[Player].Visible = true
+            else
+                Boxes[Player].Visible = false
+                HealthTexts[Player].Visible = false
+                DistanceTexts[Player].Visible = false
+            end
+        elseif Boxes[Player] then
+            Boxes[Player].Visible = false
+            if HealthTexts[Player] then
+                HealthTexts[Player].Visible = false
+            end
+            if DistanceTexts[Player] then
+                DistanceTexts[Player].Visible = false
+            end
+        end
+    end
+end)
+
+-- Clean up boxes, health texts, and distance texts when a player leaves
+Players.PlayerRemoving:Connect(function(Player)
+    if Boxes[Player] then
+        Boxes[Player]:Remove()
+        Boxes[Player] = nil
+    end
+    if HealthTexts[Player] then
+        HealthTexts[Player]:Remove()
+        HealthTexts[Player] = nil
+    end
+    if DistanceTexts[Player] then
+        DistanceTexts[Player]:Remove()
+        DistanceTexts[Player] = nil
+    end
+end)
+   end,
+})
+
+local FRTab = Window:CreateTab("🎲 Misc", nil)
+local OtherSection = FRTab:CreateSection("Farm")
+
+local farmToggle = FRTab:CreateToggle({
+   Name = "Auto Farm",
+   CurrentValue = false,
+   Flag = "Toggle1",
+   Callback = function(Value)
+        print("FARMING")
+   end,
+})
